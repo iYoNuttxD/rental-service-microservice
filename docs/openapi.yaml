@@ -1,0 +1,426 @@
+openapi: 3.0.0
+info:
+  title: Rental Service API
+  version: 1.0.0
+  description: Microserviço para gerenciamento de aluguel de veículos
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: http://localhost:3015/api/v1
+    description: Development server
+  - url: https://rental-service-app.azurewebsites.net/api/v1
+    description: Production server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Rental:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        vehicleId:
+          type: string
+        userId:
+          type: string
+        status:
+          type: string
+          enum: [pending, active, ended, canceled, returned]
+        startAt:
+          type: string
+          format: date-time
+        endAt:
+          type: string
+          format: date-time
+        renewedCount:
+          type: integer
+        paymentRef:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Vehicle:
+      type: object
+      properties:
+        id:
+          type: string
+        plate:
+          type: string
+        model:
+          type: string
+        status:
+          type: string
+          enum: [available, rented, maintenance]
+        currentRentalId:
+          type: string
+          nullable: true
+
+    CreateRentalRequest:
+      type: object
+      required:
+        - vehicleId
+        - userId
+        - startAt
+        - endAt
+        - paymentAmount
+      properties:
+        vehicleId:
+          type: string
+        userId:
+          type: string
+        startAt:
+          type: string
+          format: date-time
+        endAt:
+          type: string
+          format: date-time
+        paymentAmount:
+          type: number
+          format: float
+
+    RenewRentalRequest:
+      type: object
+      required:
+        - additionalDays
+      properties:
+        additionalDays:
+          type: integer
+          minimum: 1
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        correlationId:
+          type: string
+        traceId:
+          type: string
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  timestamp:
+                    type: string
+                    format: date-time
+                  service:
+                    type: string
+
+  /metrics:
+    get:
+      summary: Prometheus metrics
+      tags:
+        - Monitoring
+      responses:
+        '200':
+          description: Metrics in Prometheus format
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /rentals:
+    get:
+      summary: List rentals
+      tags:
+        - Rentals
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: vehicleId
+          in: query
+          schema:
+            type: string
+        - name: userId
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, active, ended, canceled, returned]
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+      responses:
+        '200':
+          description: List of rentals
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Rental'
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      limit:
+                        type: integer
+                      total:
+                        type: integer
+                      pages:
+                        type: integer
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Create a new rental
+      tags:
+        - Rentals
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRentalRequest'
+      responses:
+        '201':
+          description: Rental created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rental'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /rentals/{id}:
+    get:
+      summary: Get rental by ID
+      tags:
+        - Rentals
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Rental details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rental'
+        '404':
+          description: Rental not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /rentals/{id}/renew:
+    post:
+      summary: Renew a rental
+      tags:
+        - Rentals
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RenewRentalRequest'
+      responses:
+        '200':
+          description: Rental renewed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rental'
+        '404':
+          description: Rental not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /rentals/{id}/end:
+    post:
+      summary: End a rental
+      tags:
+        - Rentals
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Rental ended
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rental'
+        '404':
+          description: Rental not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /rentals/{id}/return:
+    post:
+      summary: Mark rental as returned
+      tags:
+        - Rentals
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Rental returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rental'
+        '404':
+          description: Rental not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /vehicles/availability:
+    get:
+      summary: Check vehicle availability
+      tags:
+        - Vehicles
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: vehicleId
+          in: query
+          schema:
+            type: string
+          description: Specific vehicle ID to check
+        - name: startAt
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endAt
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: model
+          in: query
+          schema:
+            type: string
+          description: Filter by vehicle model
+      responses:
+        '200':
+          description: Availability information
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      available:
+                        type: boolean
+                      reason:
+                        type: string
+                  - type: object
+                    properties:
+                      available:
+                        type: boolean
+                      vehicles:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Vehicle'
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: Monitoring
+    description: Monitoring and metrics
+  - name: Rentals
+    description: Rental management operations
+  - name: Vehicles
+    description: Vehicle availability operations
