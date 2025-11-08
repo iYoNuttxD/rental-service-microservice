@@ -10,7 +10,7 @@ info:
 servers:
   - url: http://localhost:3015/api/v1
     description: Development server
-  - url: https://rental-service-app.azurewebsites.net/api/v1
+  - url: https://clickdelivery-rental-service.azurewebsites.net/api/v1
     description: Production server
 
 components:
