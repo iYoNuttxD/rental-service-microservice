@@ -3,7 +3,7 @@
  * Represents a vehicle rental transaction
  */
 class Rental {
-  constructor({
+  constructor ({
     id,
     vehicleId,
     userId,
@@ -27,27 +27,27 @@ class Rental {
     this.updatedAt = updatedAt;
   }
 
-  isPending() {
+  isPending () {
     return this.status === 'pending';
   }
 
-  isActive() {
+  isActive () {
     return this.status === 'active';
   }
 
-  canBeRenewed() {
+  canBeRenewed () {
     return this.status === 'active';
   }
 
-  canBeEnded() {
+  canBeEnded () {
     return this.status === 'active' || this.status === 'pending';
   }
 
-  canBeReturned() {
+  canBeReturned () {
     return this.status === 'active' || this.status === 'ended';
   }
 
-  activate() {
+  activate () {
     if (!this.isPending()) {
       throw new Error('Only pending rentals can be activated');
     }
@@ -55,7 +55,7 @@ class Rental {
     this.updatedAt = new Date();
   }
 
-  renew(newEndAt) {
+  renew (newEndAt) {
     if (!this.canBeRenewed()) {
       throw new Error('Only active rentals can be renewed');
     }
@@ -64,7 +64,7 @@ class Rental {
     this.updatedAt = new Date();
   }
 
-  end() {
+  end () {
     if (!this.canBeEnded()) {
       throw new Error('Rental cannot be ended in current status');
     }
@@ -72,7 +72,7 @@ class Rental {
     this.updatedAt = new Date();
   }
 
-  markAsReturned() {
+  markAsReturned () {
     if (!this.canBeReturned()) {
       throw new Error('Rental cannot be marked as returned in current status');
     }
@@ -80,7 +80,7 @@ class Rental {
     this.updatedAt = new Date();
   }
 
-  cancel() {
+  cancel () {
     if (this.status === 'active') {
       throw new Error('Cannot cancel an active rental');
     }

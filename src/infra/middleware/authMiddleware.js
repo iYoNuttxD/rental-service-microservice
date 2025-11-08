@@ -2,7 +2,7 @@
  * Authentication Middleware
  * Verifies JWT tokens and attaches user info to request
  */
-function createAuthMiddleware(jwtVerifier, authRequired, logger) {
+function createAuthMiddleware (jwtVerifier, authRequired, logger) {
   return async (req, res, next) => {
     try {
       const authHeader = req.headers.authorization;

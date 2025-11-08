@@ -3,7 +3,7 @@
  * Use case for returning a rental
  */
 class ReturnRentalUseCase {
-  constructor(
+  constructor (
     transactionService,
     eventPublisher,
     logger,
@@ -15,7 +15,7 @@ class ReturnRentalUseCase {
     this.metricsCollector = metricsCollector;
   }
 
-  async execute(rentalId) {
+  async execute (rentalId) {
     const startTime = Date.now();
 
     try {
@@ -39,9 +39,9 @@ class ReturnRentalUseCase {
 
       return rental;
     } catch (error) {
-      this.logger.error('Failed to return rental', { 
-        rentalId, 
-        error: error.message 
+      this.logger.error('Failed to return rental', {
+        rentalId,
+        error: error.message
       });
       throw error;
     }

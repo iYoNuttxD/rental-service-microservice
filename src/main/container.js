@@ -32,11 +32,11 @@ const RentalHandlers = require('../features/rentals/handlers/RentalHandlers');
  * Composition Root - Dependency Injection Container
  */
 class Container {
-  constructor() {
+  constructor () {
     this.instances = {};
   }
 
-  async initialize() {
+  async initialize () {
     // Logger
     const logger = new Logger(process.env.LOG_LEVEL || 'info');
     this.instances.logger = logger;
@@ -169,21 +169,21 @@ class Container {
     logger.info('Container initialized successfully');
   }
 
-  get(name) {
+  get (name) {
     return this.instances[name];
   }
 
-  async cleanup() {
+  async cleanup () {
     const logger = this.instances.logger;
-    
+
     if (this.instances.eventPublisher) {
       await this.instances.eventPublisher.close();
     }
-    
+
     if (this.instances.mongoConnection) {
       await this.instances.mongoConnection.disconnect();
     }
-    
+
     logger.info('Container cleanup completed');
   }
 }

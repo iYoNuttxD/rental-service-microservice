@@ -6,7 +6,7 @@ const Rental = require('../entities/Rental');
  * Domain service for rental transaction business logic
  */
 class RentalTransactionService {
-  constructor(rentalRepository, vehicleRepository, inventoryService) {
+  constructor (rentalRepository, vehicleRepository, inventoryService) {
     this.rentalRepository = rentalRepository;
     this.vehicleRepository = vehicleRepository;
     this.inventoryService = inventoryService;
@@ -15,7 +15,7 @@ class RentalTransactionService {
   /**
    * Initiate a new rental
    */
-  async initiateRental(vehicleId, userId, startAt, endAt) {
+  async initiateRental (vehicleId, userId, startAt, endAt) {
     // Validate dates
     const now = new Date();
     if (startAt < now) {
@@ -62,9 +62,9 @@ class RentalTransactionService {
   /**
    * Activate a rental after payment confirmation
    */
-  async activateRental(rentalId, paymentRef) {
+  async activateRental (rentalId, paymentRef) {
     const rental = await this.rentalRepository.findById(rentalId);
-    
+
     if (!rental) {
       throw new Error('Rental not found');
     }
@@ -78,9 +78,9 @@ class RentalTransactionService {
   /**
    * Renew a rental (extend end date)
    */
-  async renewRental(rentalId, additionalDays) {
+  async renewRental (rentalId, additionalDays) {
     const rental = await this.rentalRepository.findById(rentalId);
-    
+
     if (!rental) {
       throw new Error('Rental not found');
     }
@@ -105,9 +105,9 @@ class RentalTransactionService {
   /**
    * End a rental
    */
-  async endRental(rentalId) {
+  async endRental (rentalId) {
     const rental = await this.rentalRepository.findById(rentalId);
-    
+
     if (!rental) {
       throw new Error('Rental not found');
     }
@@ -124,9 +124,9 @@ class RentalTransactionService {
   /**
    * Mark rental as returned
    */
-  async returnRental(rentalId) {
+  async returnRental (rentalId) {
     const rental = await this.rentalRepository.findById(rentalId);
-    
+
     if (!rental) {
       throw new Error('Rental not found');
     }

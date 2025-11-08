@@ -5,17 +5,17 @@ const Rental = require('../../domain/entities/Rental');
  * MongoDB implementation of RentalRepositoryPort
  */
 class MongoRentalRepository extends RentalRepositoryPort {
-  constructor(mongoConnection, logger) {
+  constructor (mongoConnection, logger) {
     super();
     this.mongoConnection = mongoConnection;
     this.logger = logger;
   }
 
-  _getCollection() {
+  _getCollection () {
     return this.mongoConnection.getCollection('rentals');
   }
 
-  _toEntity(doc) {
+  _toEntity (doc) {
     if (!doc) return null;
     return new Rental({
       id: doc._id,
@@ -31,7 +31,7 @@ class MongoRentalRepository extends RentalRepositoryPort {
     });
   }
 
-  _toDocument(rental) {
+  _toDocument (rental) {
     return {
       _id: rental.id,
       vehicleId: rental.vehicleId,
@@ -46,7 +46,7 @@ class MongoRentalRepository extends RentalRepositoryPort {
     };
   }
 
-  async create(rental) {
+  async create (rental) {
     try {
       const collection = this._getCollection();
       const doc = this._toDocument(rental);
@@ -59,7 +59,7 @@ class MongoRentalRepository extends RentalRepositoryPort {
     }
   }
 
-  async findById(id) {
+  async findById (id) {
     try {
       const collection = this._getCollection();
       const doc = await collection.findOne({ _id: id });
@@ -70,7 +70,7 @@ class MongoRentalRepository extends RentalRepositoryPort {
     }
   }
 
-  async update(id, rental) {
+  async update (id, rental) {
     try {
       const collection = this._getCollection();
       const doc = this._toDocument(rental);
@@ -86,7 +86,7 @@ class MongoRentalRepository extends RentalRepositoryPort {
     }
   }
 
-  async findAll(filters = {}, options = {}) {
+  async findAll (filters = {}, options = {}) {
     try {
       const collection = this._getCollection();
       const query = {};
@@ -128,7 +128,7 @@ class MongoRentalRepository extends RentalRepositoryPort {
     }
   }
 
-  async findActiveByVehicleId(vehicleId) {
+  async findActiveByVehicleId (vehicleId) {
     try {
       const collection = this._getCollection();
       const doc = await collection.findOne({
@@ -142,7 +142,7 @@ class MongoRentalRepository extends RentalRepositoryPort {
     }
   }
 
-  async findOverlappingRentals(vehicleId, startAt, endAt) {
+  async findOverlappingRentals (vehicleId, startAt, endAt) {
     try {
       const collection = this._getCollection();
       const docs = await collection.find({
@@ -154,9 +154,9 @@ class MongoRentalRepository extends RentalRepositoryPort {
       }).toArray();
       return docs.map(doc => this._toEntity(doc));
     } catch (error) {
-      this.logger.error('Failed to find overlapping rentals', { 
-        vehicleId, 
-        error: error.message 
+      this.logger.error('Failed to find overlapping rentals', {
+        vehicleId,
+        error: error.message
       });
       throw error;
     }

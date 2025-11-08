@@ -3,7 +3,7 @@
  * Represents a vehicle in the rental inventory
  */
 class Vehicle {
-  constructor({ id, plate, model, status, currentRentalId = null }) {
+  constructor ({ id, plate, model, status, currentRentalId = null }) {
     this.id = id;
     this.plate = plate;
     this.model = model;
@@ -11,16 +11,16 @@ class Vehicle {
     this.currentRentalId = currentRentalId;
   }
 
-  isAvailable() {
+  isAvailable () {
     return this.status === 'available' && !this.currentRentalId;
   }
 
-  markAsRented(rentalId) {
+  markAsRented (rentalId) {
     this.status = 'rented';
     this.currentRentalId = rentalId;
   }
 
-  markAsAvailable() {
+  markAsAvailable () {
     this.status = 'available';
     this.currentRentalId = null;
   }

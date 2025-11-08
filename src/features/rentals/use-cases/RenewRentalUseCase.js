@@ -3,7 +3,7 @@
  * Use case for renewing a rental
  */
 class RenewRentalUseCase {
-  constructor(
+  constructor (
     transactionService,
     eventPublisher,
     logger,
@@ -15,7 +15,7 @@ class RenewRentalUseCase {
     this.metricsCollector = metricsCollector;
   }
 
-  async execute(rentalId, additionalDays) {
+  async execute (rentalId, additionalDays) {
     const startTime = Date.now();
 
     try {
@@ -43,9 +43,9 @@ class RenewRentalUseCase {
 
       return rental;
     } catch (error) {
-      this.logger.error('Failed to renew rental', { 
-        rentalId, 
-        error: error.message 
+      this.logger.error('Failed to renew rental', {
+        rentalId,
+        error: error.message
       });
       throw error;
     }

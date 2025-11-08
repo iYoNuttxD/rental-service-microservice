@@ -6,7 +6,7 @@ const JwtAuthVerifierPort = require('../../domain/ports/JwtAuthVerifierPort');
  * JWT Auth Verifier
  */
 class JwtAuthVerifier extends JwtAuthVerifierPort {
-  constructor(config, logger) {
+  constructor (config, logger) {
     super();
     this.config = config;
     this.logger = logger;
@@ -21,7 +21,7 @@ class JwtAuthVerifier extends JwtAuthVerifierPort {
     }
   }
 
-  async _getSigningKey(header) {
+  async _getSigningKey (header) {
     return new Promise((resolve, reject) => {
       this.jwksClient.getSigningKey(header.kid, (err, key) => {
         if (err) {
@@ -33,7 +33,7 @@ class JwtAuthVerifier extends JwtAuthVerifierPort {
     });
   }
 
-  async verify(token) {
+  async verify (token) {
     try {
       // Remove Bearer prefix if present
       const cleanToken = token.replace(/^Bearer\s+/i, '');

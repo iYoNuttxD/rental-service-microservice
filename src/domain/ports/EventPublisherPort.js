@@ -3,11 +3,11 @@
  * Interface for event publishing (NATS)
  */
 class EventPublisherPort {
-  async publish(subject, payload) {
+  async publish (subject, payload) {
     throw new Error('Method not implemented');
   }
 
-  async close() {
+  async close () {
     throw new Error('Method not implemented');
   }
 }

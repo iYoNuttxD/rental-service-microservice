@@ -3,7 +3,7 @@
  * Domain service for checking vehicle availability
  */
 class VehicleInventoryService {
-  constructor(vehicleRepository, rentalRepository) {
+  constructor (vehicleRepository, rentalRepository) {
     this.vehicleRepository = vehicleRepository;
     this.rentalRepository = rentalRepository;
   }
@@ -11,9 +11,9 @@ class VehicleInventoryService {
   /**
    * Check if a vehicle is available for rental in the specified period
    */
-  async isVehicleAvailable(vehicleId, startAt, endAt) {
+  async isVehicleAvailable (vehicleId, startAt, endAt) {
     const vehicle = await this.vehicleRepository.findById(vehicleId);
-    
+
     if (!vehicle) {
       return { available: false, reason: 'Vehicle not found' };
     }
@@ -30,9 +30,9 @@ class VehicleInventoryService {
     );
 
     if (overlappingRentals.length > 0) {
-      return { 
-        available: false, 
-        reason: 'Vehicle has overlapping rental periods' 
+      return {
+        available: false,
+        reason: 'Vehicle has overlapping rental periods'
       };
     }
 
@@ -42,12 +42,10 @@ class VehicleInventoryService {
   /**
    * Query available vehicles based on filters
    */
-  async queryAvailableVehicles(filters = {}) {
+  async queryAvailableVehicles (filters = {}) {
     const availableVehicles = await this.vehicleRepository.findAvailable(filters);
-    
+
     // Filter out vehicles with active/pending rentals
-    const availableVehicleIds = availableVehicles.map(v => v.id);
-    
     const result = [];
     for (const vehicle of availableVehicles) {
       const activeRental = await this.rentalRepository.findActiveByVehicleId(vehicle.id);
@@ -55,7 +53,7 @@ class VehicleInventoryService {
         result.push(vehicle);
       }
     }
-    
+
     return result;
   }
 }

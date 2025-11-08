@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require('uuid');
  * Request Logger Middleware
  * Adds correlation/trace IDs and logs requests
  */
-function createRequestLoggerMiddleware(logger, metricsCollector) {
+function createRequestLoggerMiddleware (logger, metricsCollector) {
   return (req, res, next) => {
     const startTime = Date.now();
     const correlationId = req.headers['x-correlation-id'] || uuidv4();
@@ -25,7 +25,7 @@ function createRequestLoggerMiddleware(logger, metricsCollector) {
 
     res.on('finish', () => {
       const duration = Date.now() - startTime;
-      
+
       logger.info('Request completed', {
         method: req.method,
         path: req.path,

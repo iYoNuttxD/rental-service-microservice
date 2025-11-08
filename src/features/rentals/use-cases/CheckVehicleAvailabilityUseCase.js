@@ -3,12 +3,12 @@
  * Use case for checking vehicle availability
  */
 class CheckVehicleAvailabilityUseCase {
-  constructor(inventoryService, logger) {
+  constructor (inventoryService, logger) {
     this.inventoryService = inventoryService;
     this.logger = logger;
   }
 
-  async execute(vehicleId, startAt, endAt, filters) {
+  async execute (vehicleId, startAt, endAt, filters) {
     try {
       if (vehicleId) {
         // Check specific vehicle

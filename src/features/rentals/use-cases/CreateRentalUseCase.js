@@ -3,7 +3,7 @@
  * Use case for initiating a new rental
  */
 class CreateRentalUseCase {
-  constructor(
+  constructor (
     transactionService,
     paymentGateway,
     eventPublisher,
@@ -17,7 +17,7 @@ class CreateRentalUseCase {
     this.metricsCollector = metricsCollector;
   }
 
-  async execute(data) {
+  async execute (data) {
     const startTime = Date.now();
 
     try {
@@ -46,9 +46,9 @@ class CreateRentalUseCase {
         rental.status = 'active';
         rental.paymentRef = paymentRef;
       } catch (paymentError) {
-        this.logger.error('Payment failed', { 
-          rentalId: rental.id, 
-          error: paymentError.message 
+        this.logger.error('Payment failed', {
+          rentalId: rental.id,
+          error: paymentError.message
         });
         this.metricsCollector.incrementPaymentAttempt('failed');
         // Rental remains in pending status

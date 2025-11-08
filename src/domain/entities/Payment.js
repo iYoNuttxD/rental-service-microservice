@@ -3,7 +3,7 @@
  * Represents a payment transaction
  */
 class Payment {
-  constructor({
+  constructor ({
     id,
     reference,
     amount,
@@ -19,15 +19,15 @@ class Payment {
     this.createdAt = createdAt;
   }
 
-  isCompleted() {
+  isCompleted () {
     return this.status === 'completed';
   }
 
-  isPending() {
+  isPending () {
     return this.status === 'pending';
   }
 
-  hasFailed() {
+  hasFailed () {
     return this.status === 'failed';
   }
 }

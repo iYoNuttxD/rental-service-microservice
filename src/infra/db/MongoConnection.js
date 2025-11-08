@@ -4,7 +4,7 @@ const { MongoClient } = require('mongodb');
  * MongoDB Connection Manager
  */
 class MongoConnection {
-  constructor(uri, dbName, logger) {
+  constructor (uri, dbName, logger) {
     this.uri = uri;
     this.dbName = dbName;
     this.logger = logger;
@@ -12,7 +12,7 @@ class MongoConnection {
     this.db = null;
   }
 
-  async connect() {
+  async connect () {
     try {
       this.client = new MongoClient(this.uri);
       await this.client.connect();
@@ -24,21 +24,21 @@ class MongoConnection {
     }
   }
 
-  async disconnect() {
+  async disconnect () {
     if (this.client) {
       await this.client.close();
       this.logger.info('Disconnected from MongoDB');
     }
   }
 
-  getDb() {
+  getDb () {
     if (!this.db) {
       throw new Error('Database not connected');
     }
     return this.db;
   }
 
-  getCollection(name) {
+  getCollection (name) {
     return this.getDb().collection(name);
   }
 }

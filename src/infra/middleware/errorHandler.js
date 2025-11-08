@@ -2,7 +2,7 @@
  * Error Handler Middleware
  * Standardized error response format
  */
-function createErrorHandler(logger) {
+function createErrorHandler (logger) {
   return (err, req, res, next) => {
     logger.error('Request error', {
       error: err.message,

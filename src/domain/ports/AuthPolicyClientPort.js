@@ -3,7 +3,7 @@
  * Interface for OPA authorization
  */
 class AuthPolicyClientPort {
-  async authorize(input) {
+  async authorize (input) {
     throw new Error('Method not implemented');
   }
 }

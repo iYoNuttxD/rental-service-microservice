@@ -2,12 +2,12 @@
  * Rental HTTP Handlers
  */
 class RentalHandlers {
-  constructor(useCases, logger) {
+  constructor (useCases, logger) {
     this.useCases = useCases;
     this.logger = logger;
   }
 
-  createRental() {
+  createRental () {
     return async (req, res, next) => {
       try {
         const rental = await this.useCases.createRental.execute(req.body);
@@ -18,7 +18,7 @@ class RentalHandlers {
     };
   }
 
-  renewRental() {
+  renewRental () {
     return async (req, res, next) => {
       try {
         const { id } = req.params;
@@ -31,7 +31,7 @@ class RentalHandlers {
     };
   }
 
-  endRental() {
+  endRental () {
     return async (req, res, next) => {
       try {
         const { id } = req.params;
@@ -43,7 +43,7 @@ class RentalHandlers {
     };
   }
 
-  returnRental() {
+  returnRental () {
     return async (req, res, next) => {
       try {
         const { id } = req.params;
@@ -55,7 +55,7 @@ class RentalHandlers {
     };
   }
 
-  listRentals() {
+  listRentals () {
     return async (req, res, next) => {
       try {
         const filters = {
@@ -77,7 +77,7 @@ class RentalHandlers {
     };
   }
 
-  getRental() {
+  getRental () {
     return async (req, res, next) => {
       try {
         const { id } = req.params;
@@ -89,7 +89,7 @@ class RentalHandlers {
     };
   }
 
-  checkAvailability() {
+  checkAvailability () {
     return async (req, res, next) => {
       try {
         const { vehicleId, startAt, endAt, model } = req.query;

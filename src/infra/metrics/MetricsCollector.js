@@ -5,9 +5,9 @@ const promClient = require('prom-client');
  * Prometheus metrics collector
  */
 class MetricsCollector {
-  constructor() {
+  constructor () {
     this.register = new promClient.Registry();
-    
+
     // Default metrics (memory, CPU, etc.)
     promClient.collectDefaultMetrics({ register: this.register });
 
@@ -76,43 +76,43 @@ class MetricsCollector {
     });
   }
 
-  getMetrics() {
+  getMetrics () {
     return this.register.metrics();
   }
 
-  incrementRentalStarted(status = 'success') {
+  incrementRentalStarted (status = 'success') {
     this.rentalsStartedTotal.inc({ status });
   }
 
-  incrementRentalRenewed() {
+  incrementRentalRenewed () {
     this.rentalsRenewedTotal.inc();
   }
 
-  incrementRentalEnded() {
+  incrementRentalEnded () {
     this.rentalsEndedTotal.inc();
   }
 
-  incrementRentalReturned() {
+  incrementRentalReturned () {
     this.rentalsReturnedTotal.inc();
   }
 
-  incrementPaymentAttempt(result) {
+  incrementPaymentAttempt (result) {
     this.paymentAttemptsTotal.inc({ result });
   }
 
-  incrementEventPublished(type) {
+  incrementEventPublished (type) {
     this.eventsPublishedTotal.inc({ type });
   }
 
-  incrementHttpRequest(method, path, status) {
+  incrementHttpRequest (method, path, status) {
     this.httpRequestsTotal.inc({ method, path, status });
   }
 
-  observeRentalOperation(operation, duration) {
+  observeRentalOperation (operation, duration) {
     this.rentalOperationDuration.observe({ operation }, duration);
   }
 
-  observeHttpRequest(method, path, duration) {
+  observeHttpRequest (method, path, duration) {
     this.httpRequestDuration.observe({ method, path }, duration);
   }
 }

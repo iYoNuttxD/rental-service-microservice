@@ -13,7 +13,7 @@ const createRequestLoggerMiddleware = require('../infra/middleware/requestLogger
 const createErrorHandler = require('../infra/middleware/errorHandler');
 const { setupRentalRoutes, setupAvailabilityRoutes } = require('../features/rentals/handlers/routes');
 
-async function createApp() {
+async function createApp () {
   // Initialize container
   const container = new Container();
   await container.initialize();
@@ -43,8 +43,8 @@ async function createApp() {
 
   // Health check
   app.get('/api/v1/health', (req, res) => {
-    res.json({ 
-      status: 'ok', 
+    res.json({
+      status: 'ok',
       timestamp: new Date().toISOString(),
       service: 'rental-service'
     });
@@ -68,22 +68,22 @@ async function createApp() {
     if (fs.existsSync(openapiPath)) {
       const openapiContent = fs.readFileSync(openapiPath, 'utf8');
       const openapiSpec = YAML.parse(openapiContent);
-      
+
       app.use('/api/v1/api-docs', swaggerUi.serve);
-      app.get('/api/v1/api-docs', swaggerUi.setup(openapiSpec, { 
-        customCss: '.swagger-ui .topbar { display: none }' 
+      app.get('/api/v1/api-docs', swaggerUi.setup(openapiSpec, {
+        customCss: '.swagger-ui .topbar { display: none }'
       }));
-      
+
       app.get('/api/v1/api-docs/openapi.yaml', (req, res) => {
         res.set('Content-Type', 'text/yaml');
         res.send(openapiContent);
       });
-      
+
       logger.info('Swagger documentation enabled');
     } else {
       logger.warn('OpenAPI spec not found, serving fallback');
       app.get('/api/v1/api-docs', (req, res) => {
-        res.json({ 
+        res.json({
           message: 'OpenAPI documentation not available',
           endpoints: [
             'POST /api/v1/rentals',
@@ -113,14 +113,14 @@ async function createApp() {
   return { app, container };
 }
 
-async function startServer() {
+async function startServer () {
   try {
     const { app, container } = await createApp();
     const logger = container.get('logger');
     const port = process.env.PORT || 3015;
 
     const server = app.listen(port, () => {
-      logger.info(`Rental service started`, { 
+      logger.info('Rental service started', {
         port,
         env: process.env.NODE_ENV || 'development'
       });

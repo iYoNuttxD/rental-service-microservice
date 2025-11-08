@@ -5,7 +5,7 @@ const EventPublisherPort = require('../../domain/ports/EventPublisherPort');
  * NATS Event Publisher
  */
 class NatsEventPublisher extends EventPublisherPort {
-  constructor(url, logger) {
+  constructor (url, logger) {
     super();
     this.url = url;
     this.logger = logger;
@@ -13,7 +13,7 @@ class NatsEventPublisher extends EventPublisherPort {
     this.sc = StringCodec();
   }
 
-  async connect() {
+  async connect () {
     try {
       this.nc = await connect({ servers: this.url });
       this.logger.info('Connected to NATS', { url: this.url });
@@ -23,7 +23,7 @@ class NatsEventPublisher extends EventPublisherPort {
     }
   }
 
-  async publish(subject, payload) {
+  async publish (subject, payload) {
     if (!this.nc) {
       throw new Error('NATS not connected');
     }
@@ -35,18 +35,18 @@ class NatsEventPublisher extends EventPublisherPort {
       });
 
       this.nc.publish(subject, this.sc.encode(data));
-      
+
       this.logger.info('Event published', { subject, payload });
     } catch (error) {
-      this.logger.error('Failed to publish event', { 
-        subject, 
-        error: error.message 
+      this.logger.error('Failed to publish event', {
+        subject,
+        error: error.message
       });
       throw error;
     }
   }
 
-  async close() {
+  async close () {
     if (this.nc) {
       await this.nc.drain();
       this.logger.info('NATS connection closed');

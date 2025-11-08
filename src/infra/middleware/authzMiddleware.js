@@ -2,7 +2,7 @@
  * Authorization Middleware
  * Checks permissions via OPA
  */
-function createAuthzMiddleware(authPolicyClient, logger) {
+function createAuthzMiddleware (authPolicyClient, logger) {
   return async (req, res, next) => {
     try {
       const input = {

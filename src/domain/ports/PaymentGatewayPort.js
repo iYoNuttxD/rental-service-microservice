@@ -3,15 +3,15 @@
  * Interface for payment gateway integration
  */
 class PaymentGatewayPort {
-  async createCharge(amount, rentalId, metadata = {}) {
+  async createCharge (amount, rentalId, metadata = {}) {
     throw new Error('Method not implemented');
   }
 
-  async confirmCharge(paymentId) {
+  async confirmCharge (paymentId) {
     throw new Error('Method not implemented');
   }
 
-  async getPaymentStatus(paymentId) {
+  async getPaymentStatus (paymentId) {
     throw new Error('Method not implemented');
   }
 }

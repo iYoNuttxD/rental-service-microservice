@@ -5,17 +5,17 @@ const Vehicle = require('../../domain/entities/Vehicle');
  * MongoDB implementation of VehicleRepositoryPort
  */
 class MongoVehicleRepository extends VehicleRepositoryPort {
-  constructor(mongoConnection, logger) {
+  constructor (mongoConnection, logger) {
     super();
     this.mongoConnection = mongoConnection;
     this.logger = logger;
   }
 
-  _getCollection() {
+  _getCollection () {
     return this.mongoConnection.getCollection('vehicles');
   }
 
-  _toEntity(doc) {
+  _toEntity (doc) {
     if (!doc) return null;
     return new Vehicle({
       id: doc._id,
@@ -26,7 +26,7 @@ class MongoVehicleRepository extends VehicleRepositoryPort {
     });
   }
 
-  _toDocument(vehicle) {
+  _toDocument (vehicle) {
     return {
       _id: vehicle.id,
       plate: vehicle.plate,
@@ -36,7 +36,7 @@ class MongoVehicleRepository extends VehicleRepositoryPort {
     };
   }
 
-  async create(vehicle) {
+  async create (vehicle) {
     try {
       const collection = this._getCollection();
       const doc = this._toDocument(vehicle);
@@ -49,7 +49,7 @@ class MongoVehicleRepository extends VehicleRepositoryPort {
     }
   }
 
-  async findById(id) {
+  async findById (id) {
     try {
       const collection = this._getCollection();
       const doc = await collection.findOne({ _id: id });
@@ -60,7 +60,7 @@ class MongoVehicleRepository extends VehicleRepositoryPort {
     }
   }
 
-  async findByPlate(plate) {
+  async findByPlate (plate) {
     try {
       const collection = this._getCollection();
       const doc = await collection.findOne({ plate });
@@ -71,7 +71,7 @@ class MongoVehicleRepository extends VehicleRepositoryPort {
     }
   }
 
-  async update(id, vehicle) {
+  async update (id, vehicle) {
     try {
       const collection = this._getCollection();
       const doc = this._toDocument(vehicle);
@@ -87,7 +87,7 @@ class MongoVehicleRepository extends VehicleRepositoryPort {
     }
   }
 
-  async findAvailable(filters = {}) {
+  async findAvailable (filters = {}) {
     try {
       const collection = this._getCollection();
       const query = { status: 'available' };

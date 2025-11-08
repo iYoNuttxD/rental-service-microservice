@@ -4,7 +4,7 @@ const { validators, validate } = require('../validators/rentalValidators');
 /**
  * Setup rental routes
  */
-function setupRentalRoutes(handlers, authMiddleware, authzMiddleware) {
+function setupRentalRoutes (handlers, authMiddleware, authzMiddleware) {
   const router = express.Router();
 
   // Create rental
@@ -67,7 +67,7 @@ function setupRentalRoutes(handlers, authMiddleware, authzMiddleware) {
 /**
  * Setup vehicle availability routes
  */
-function setupAvailabilityRoutes(handlers, authMiddleware) {
+function setupAvailabilityRoutes (handlers, authMiddleware) {
   const router = express.Router();
 
   router.get(
