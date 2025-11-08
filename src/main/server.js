@@ -42,12 +42,123 @@ async function createApp () {
   app.use(requestLoggerMiddleware);
 
   // Health check
-  app.get('/api/v1/health', (req, res) => {
-    res.json({
+// Health check com status dos cores externos
+  app.get('/api/v1/health', async (req, res) => {
+    const result = {
+      service: 'rental-service',
       status: 'ok',
       timestamp: new Date().toISOString(),
-      service: 'rental-service'
-    });
+      uptime: process.uptime(),
+      dependencies: {}
+    };
+  
+    // MongoDB
+    try {
+      const mongoConnection = container.get('mongoConnection');
+      const db = mongoConnection.getDb();
+      await db.command({ ping: 1 });
+  
+      result.dependencies.mongodb = {
+        status: 'up',
+        dbName: db.databaseName
+      };
+    } catch (error) {
+      result.dependencies.mongodb = {
+        status: 'down',
+        error: error.message
+      };
+      result.status = 'degraded';
+    }
+  
+    // NATS
+    try {
+      const eventPublisher = container.get('eventPublisher');
+      const isConnected = !!(eventPublisher && eventPublisher.nc);
+  
+      result.dependencies.nats = isConnected
+        ? { status: 'up', url: eventPublisher.url }
+        : { status: 'down', message: 'NATS not connected' };
+  
+      if (!isConnected) {
+        result.status = 'degraded';
+      }
+    } catch (error) {
+      result.dependencies.nats = {
+        status: 'down',
+        error: error.message
+      };
+      result.status = 'degraded';
+    }
+  
+    // Payment Gateway
+    try {
+      const paymentGateway = container.get('paymentGateway');
+  
+      if (paymentGateway && paymentGateway.baseUrl && paymentGateway.apiKey) {
+        result.dependencies.paymentGateway = {
+          status: 'configured',
+          baseUrl: paymentGateway.baseUrl
+          // aqui é intencionalmente only-config, sem chamar o provider real pra não cobrar/pingar em produção
+        };
+      } else {
+        result.dependencies.paymentGateway = {
+          status: 'not_configured'
+        };
+        result.status = 'degraded';
+      }
+    } catch (error) {
+      result.dependencies.paymentGateway = {
+        status: 'down',
+        error: error.message
+      };
+      result.status = 'degraded';
+    }
+  
+    // OPA (Auth Policy)
+    try {
+      const authPolicyClient = container.get('authPolicyClient');
+  
+      if (authPolicyClient && authPolicyClient.opaUrl && authPolicyClient.policyPath) {
+        result.dependencies.opa = {
+          status: 'configured',
+          url: authPolicyClient.opaUrl,
+          policyPath: authPolicyClient.policyPath
+        };
+      } else {
+        result.dependencies.opa = {
+          status: 'not_configured'
+        };
+        // não marco como degraded obrigatório, depende da tua estratégia
+      }
+    } catch (error) {
+      result.dependencies.opa = {
+        status: 'down',
+        error: error.message
+      };
+      result.status = 'degraded';
+    }
+  
+    // Auth / JWT
+    try {
+      const jwtAuthVerifier = container.get('jwtAuthVerifier');
+      const authRequired = process.env.AUTH_JWT_REQUIRED === 'true';
+  
+      result.dependencies.auth = {
+        status: authRequired ? 'required' : 'optional',
+        jwksUri: jwtAuthVerifier?.config?.jwksUri || null,
+        issuer: jwtAuthVerifier?.config?.issuer || null,
+        audience: jwtAuthVerifier?.config?.audience || null
+      };
+    } catch (error) {
+      result.dependencies.auth = {
+        status: 'misconfigured',
+        error: error.message
+      };
+      result.status = 'degraded';
+    }
+  
+    const httpStatus = result.status === 'ok' ? 200 : 503;
+    return res.status(httpStatus).json(result);
   });
 
   // Metrics endpoint
