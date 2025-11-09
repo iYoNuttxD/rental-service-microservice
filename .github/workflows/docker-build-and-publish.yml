@@ -12,7 +12,7 @@ env:
   REGISTRY: docker.io
   DOCKERHUB_NAMESPACE: iyonuttxd
   IMAGE_NAME: rental-service
-  DOCKER_CONTEXT: .
+  BUILD_CONTEXT: .
   PLATFORMS: linux/amd64,linux/arm64
 
 jobs:
@@ -61,14 +61,14 @@ jobs:
             type=ref,event=tag
             type=sha,format=long
           labels: |
-            org.opencontainers.image.title=rental-service
+            org.opencontainers.image.title=${{ env.IMAGE_NAME }}
             org.opencontainers.image.source=${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ${{ env.DOCKER_CONTEXT }}
+          context: ${{ env.BUILD_CONTEXT }}
           platforms: ${{ env.PLATFORMS }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
