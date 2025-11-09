@@ -13,6 +13,7 @@ Microserviço para gerenciamento completo do ciclo de vida de aluguel de veícul
 - **Métricas**: Prometheus para monitoramento
 - **Logs Estruturados**: JSON com correlationId/traceId
 - **Documentação API**: Swagger/OpenAPI
+- **Imagem oficial no Docker Hub**: [https://hub.docker.com/r/iyonuttxd/rental-service](https://hub.docker.com/r/iyonuttxd/rental-service)
 
 ## 🏗️ Arquitetura
 
