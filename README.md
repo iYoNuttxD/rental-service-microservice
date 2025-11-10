@@ -2,6 +2,11 @@
 
 Microserviço para gerenciamento completo do ciclo de vida de aluguel de veículos, incluindo criação, renovação, encerramento e devolução. Implementado seguindo princípios de Clean Architecture e padrões de produção.
 
+# Feito Por
+
+Daniel Ganz Musse, João Vitor de Souza Hernandes, Flavio Augusto da Cruz Melo, Matheus 
+Lowen, Enrico Malho Bozza 
+
 ## 🎯 Funcionalidades
 
 - **Gerenciamento de Aluguéis**: Criar, renovar, encerrar e registrar devolução de aluguéis
